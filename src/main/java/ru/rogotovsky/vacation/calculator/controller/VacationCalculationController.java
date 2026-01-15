@@ -1,5 +1,6 @@
 package ru.rogotovsky.vacation.calculator.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,13 +18,13 @@ public class VacationCalculationController {
     }
 
     @GetMapping("/calculacte")
-    public VacationCalculationResponse calculate(@RequestBody VacationCalculationRequest request) {
-        return new VacationCalculationResponse(
+    public ResponseEntity<?> calculate(@RequestBody VacationCalculationRequest request) {
+        return ResponseEntity.ok(new VacationCalculationResponse(
                 calculationService.calculateVacationPay(
                         request.getAverageSalary(),
                         request.getVacationDays(),
                         request.getVacationStartDay(),
                         request.getVacationEndDay()
-                ));
+                )));
     }
 }
