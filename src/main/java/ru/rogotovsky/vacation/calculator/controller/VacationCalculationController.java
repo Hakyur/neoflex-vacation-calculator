@@ -1,8 +1,9 @@
 package ru.rogotovsky.vacation.calculator.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.rogotovsky.vacation.calculator.dto.VacationCalculationRequest;
 import ru.rogotovsky.vacation.calculator.dto.VacationCalculationResponse;
 import ru.rogotovsky.vacation.calculator.service.VacationCalculationService;
 
@@ -16,12 +17,13 @@ public class VacationCalculationController {
     }
 
     @GetMapping("/calculacte")
-    public VacationCalculationResponse calculate(
-            @RequestParam double averageSalary,
-            @RequestParam int vacationDays
-    ) {
+    public VacationCalculationResponse calculate(@RequestBody VacationCalculationRequest request) {
         return new VacationCalculationResponse(
-                calculationService.calculateVacationPay(averageSalary, vacationDays)
-        );
+                calculationService.calculateVacationPay(
+                        request.getAverageSalary(),
+                        request.getVacationDays(),
+                        request.getVacationStartDay(),
+                        request.getVacationEndDay()
+                ));
     }
 }
