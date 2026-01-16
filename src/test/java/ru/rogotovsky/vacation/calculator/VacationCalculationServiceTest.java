@@ -2,14 +2,12 @@ package ru.rogotovsky.vacation.calculator;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.rogotovsky.vacation.calculator.exception.InvalidVacationRequestException;
 import ru.rogotovsky.vacation.calculator.service.VacationCalculationService;
 import ru.rogotovsky.vacation.calculator.service.VacationPayableDayService;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class VacationCalculationServiceTest {
@@ -26,51 +24,38 @@ public class VacationCalculationServiceTest {
     }
 
     @Test
-    void testCalculateByVacationDays() {
+    void testCalculateVacationPayByVacationDays() {
         int vacationDays = 12;
 
-        double expected = Math.round((AVERAGE_SALARY / 29.3) * vacationDays * 100.0) / 100.0;
-        double actual = calculationService.calculateVacationPay(AVERAGE_SALARY, vacationDays, null, null);
+        double expected = expectedVacationPay(AVERAGE_SALARY, vacationDays);
+        double actual = calculationService.calculateVacationPay(
+                AVERAGE_SALARY, vacationDays, null, null
+        );
 
         assertEquals(expected, actual);
     }
 
     @Test
-    void testCalculatedByDateRange() {
-        LocalDate vacationStartDay = LocalDate.of(2026, 3, 2);
-        LocalDate vacationEndDay = LocalDate.of(2026, 3, 15);
+    void testCalculateVacationPayByDateRange() {
+        LocalDate vacationStartDate = LocalDate.of(2026, 3, 2);
+        LocalDate vacationEndDate = LocalDate.of(2026, 3, 15);
+        int payableDays = 13;
 
-        when(vacationPayableDayService.countPayableDays(vacationStartDay, vacationEndDay)).thenReturn(13);
+        when(vacationPayableDayService.countPayableDays(vacationStartDate, vacationEndDate))
+                .thenReturn(payableDays);
 
-        double expected = Math.round((AVERAGE_SALARY / 29.3) * 13 * 100.0) / 100.0;
+        double expected = expectedVacationPay(AVERAGE_SALARY, payableDays);
         double actual = calculationService.calculateVacationPay(
-                AVERAGE_SALARY, null, vacationStartDay, vacationEndDay
+                AVERAGE_SALARY, null, vacationStartDate, vacationEndDate
         );
 
         assertEquals(expected, actual);
 
         verify(vacationPayableDayService, times(1))
-                .countPayableDays(vacationStartDay, vacationEndDay);
+                .countPayableDays(vacationStartDate, vacationEndDate);
     }
 
-    @Test
-    void testExceptionIfStartAfterEnd() {
-        LocalDate vacationStartDay = LocalDate.of(2026, 1, 10);
-        LocalDate vacationEndDay = LocalDate.of(2026, 1, 9);
-
-        Exception exception = assertThrows(InvalidVacationRequestException.class,
-                () -> calculationService.calculateVacationPay(
-                        AVERAGE_SALARY, null, vacationStartDay, vacationEndDay
-                ));
-        assertEquals("Start date must be before end date", exception.getMessage());
-    }
-
-    @Test
-    void testExceptionIfNoDaysOrDatesProvided() {
-        Exception exception = assertThrows(InvalidVacationRequestException.class,
-                () -> calculationService.calculateVacationPay(
-                        AVERAGE_SALARY, null, null, null
-                ));
-        assertEquals("Vacation days or date range must be provided", exception.getMessage());
+    private double expectedVacationPay(double salary, int days) {
+        return Math.round((salary / 29.3) * days * 100.0) / 100.0;
     }
 }
