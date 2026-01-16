@@ -1,5 +1,6 @@
 package ru.rogotovsky.vacation.calculator.handler;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -10,6 +11,7 @@ import ru.rogotovsky.vacation.calculator.dto.ErrorResponse;
 import java.time.LocalDateTime;
 
 @RestControllerAdvice
+@Hidden
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
