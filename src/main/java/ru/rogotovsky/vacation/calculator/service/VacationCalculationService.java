@@ -24,15 +24,10 @@ public class VacationCalculationService {
     ) {
         int payableDays;
 
-        if (vacationStartDay != null && vacationEndDay != null) {
-            if (vacationStartDay.isAfter(vacationEndDay)) {
-                throw new InvalidVacationRequestException("Start date must be before end date");
-            }
-            payableDays = vacationPayableDayService.countPayableDays(vacationStartDay, vacationEndDay);
-        } else if (vacationDays != null) {
+        if (vacationDays != null) {
             payableDays = vacationDays;
         } else {
-            throw new InvalidVacationRequestException("Vacation days or date range must be provided");
+            payableDays = vacationPayableDayService.countPayableDays(vacationStartDay, vacationEndDay);
         }
 
         double averageDailySalary = averageSalary / AVERAGE_DAYS_IN_MONTH;

@@ -2,6 +2,7 @@ package ru.rogotovsky.vacation.calculator.handler;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.rogotovsky.vacation.calculator.dto.ErrorResponse;
@@ -12,13 +13,16 @@ import java.time.LocalDateTime;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(InvalidVacationRequestException.class)
-    public ResponseEntity<?> handleInvalidVacationRequest(InvalidVacationRequestException e) {
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<?> handleInvalidVacationRequest(MethodArgumentNotValidException e) {
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 "Invalid request",
-                e.getMessage()
+                e.getBindingResult()
+                        .getAllErrors()
+                        .get(0)
+                        .getDefaultMessage()
         );
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

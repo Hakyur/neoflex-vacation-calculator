@@ -8,6 +8,8 @@ import ru.rogotovsky.vacation.calculator.dto.VacationCalculationRequest;
 import ru.rogotovsky.vacation.calculator.dto.VacationCalculationResponse;
 import ru.rogotovsky.vacation.calculator.service.VacationCalculationService;
 
+import javax.validation.Valid;
+
 @RestController
 public class VacationCalculationController {
 
@@ -18,7 +20,7 @@ public class VacationCalculationController {
     }
 
     @GetMapping("/calculacte")
-    public ResponseEntity<?> calculate(@RequestBody VacationCalculationRequest request) {
+    public ResponseEntity<?> calculate(@Valid @RequestBody VacationCalculationRequest request) {
         return ResponseEntity.ok(new VacationCalculationResponse(
                 calculationService.calculateVacationPay(
                         request.getAverageSalary(),
