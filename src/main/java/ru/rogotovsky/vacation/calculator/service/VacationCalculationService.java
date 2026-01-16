@@ -1,7 +1,6 @@
 package ru.rogotovsky.vacation.calculator.service;
 
 import org.springframework.stereotype.Service;
-import ru.rogotovsky.vacation.calculator.exception.InvalidVacationRequestException;
 
 import java.time.LocalDate;
 
