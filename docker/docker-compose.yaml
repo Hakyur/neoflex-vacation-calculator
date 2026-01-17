@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  vacation-calculator:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: vacation-calculator
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
